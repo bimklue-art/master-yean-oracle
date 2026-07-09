@@ -177,12 +177,19 @@ style={styles.resetButton}
 
 function Deck({ title, color, value, locked, onClick }) {
   const isActive = !locked && !value;
+  const realmClass =
+  color === "#2C5DAA"
+    ? "sky-aura"
+    : color === "#2E7D5B"
+    ? "earth-aura"
+    : "human-aura";
 
   return (
     <div>
       <h2 style={{ color }}>{title}</h2>
 
       <div
+        className={isActive ? realmClass : ""}
         onClick={isActive ? onClick : undefined}
         style={{
           ...styles.card,
