@@ -9,6 +9,7 @@ function App() {
   const [activeRealm, setActiveRealm] = useState("sky");
 
   function drawCard(realm, deck, setter) {
+    playRealmSound(realm);
 
   const random =
     deck[Math.floor(Math.random() * deck.length)];
@@ -23,10 +24,16 @@ function App() {
 
     if (realm === "earth") {
       setActiveRealm("human");
+      
     }
 
     if (realm === "human") {
       setActiveRealm("complete");
+       setTimeout(() => {
+       playTone(880, 0.25);
+        setTimeout(() => playTone(660, 0.25), 200);
+        setTimeout(() => playTone(520, 0.35), 400);
+        }, 300);
     }
 
   }, 800);
@@ -420,6 +427,30 @@ function resetRitual() {
 
   setActiveRealm("sky");
 
+}
+
+function playTone(frequency = 440, duration = 0.25) {
+  const audio = new AudioContext();
+  const oscillator = audio.createOscillator();
+  const gain = audio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+
+  oscillator.frequency.value = frequency;
+  oscillator.type = "sine";
+
+  gain.gain.setValueAtTime(0.2, audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + duration);
+
+  oscillator.start(audio.currentTime);
+  oscillator.stop(audio.currentTime + duration);
+}
+
+function playRealmSound(realm) {
+  if (realm === "sky") playTone(520, 0.35);
+  if (realm === "earth") playTone(390, 0.35);
+  if (realm === "human") playTone(660, 0.35);
 }
 
 export default App;
