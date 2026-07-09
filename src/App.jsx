@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 import { skyCards, earthCards, humanCards } from "./data/cards";
 
 function App() {
@@ -39,8 +40,33 @@ function resetRitual() {
 }
 
   return (
-    <div style={styles.page}>
-      <h1>MASTER YEAN ORACLE</h1>
+    <div className="academy-bg" style={styles.page}>
+      <div 
+  className="mist"
+  style={{
+    left: "0%",
+    top: "25%"
+  }}
+/>
+
+<div 
+  className="mist"
+  style={{
+    left: "30%",
+    top: "55%"
+  }}
+/>
+      <div className="gold-particle"
+style={{left:"20%", top:"70%"}}
+/>
+
+<div className="gold-particle"
+style={{left:"50%", top:"80%"}}
+/>
+
+<div className="gold-particle"
+style={{left:"75%", top:"65%"}}
+/>
       <h2>天 • 地 • 人</h2>
       <p>Draw in order: Sky → Earth → Human</p>
 
@@ -249,7 +275,9 @@ function Deck({ title, color, value, locked, onClick }) {
 
 const styles = {
   page: {
+    
     minHeight: "100vh",
+    position:"relative",
     background: "linear-gradient(135deg, #fff7e6, #f3d9a4)",
     textAlign: "center",
     padding: "40px",
