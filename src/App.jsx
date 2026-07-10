@@ -202,7 +202,7 @@ function Deck({ title, color, value, locked, onClick }) {
       <h2 style={{ color }}>{title}</h2>
 
       <div
-        className={isActive ? realmClass : ""}
+        className={`artifact-card ${isActive ? realmClass : ""}`}
         onClick={isActive ? onClick : undefined}
         style={{
           ...styles.card,
@@ -233,6 +233,14 @@ function Deck({ title, color, value, locked, onClick }) {
           
         />
 
+        <div className="corner-ornament corner-top-left">◆</div>
+  <div className="corner-ornament corner-top-right">◆</div>
+  <div className="corner-ornament corner-bottom-left">◆</div>
+  <div className="corner-ornament corner-bottom-right">◆</div>
+
+  <div className="card-shine" />
+  <div className="card-texture" />
+
         <div
   style={{
     position:"absolute",
@@ -240,11 +248,11 @@ function Deck({ title, color, value, locked, onClick }) {
     opacity:0.12,
     zIndex:1,
   }}
->
+  >
 
-{realmSymbol}
+  {realmSymbol}
 
-</div>
+  </div>
 
         <div
           style={{
@@ -259,82 +267,74 @@ function Deck({ title, color, value, locked, onClick }) {
         </div>
 
         <div
+  style={{
+    position: "relative",
+    zIndex: 6,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  {value ? (
+    value.image ? (
+      <img
+        src={value.image}
+        alt={value.name}
+        className="card-image"
+      />
+    ) : (
+      <div>
+        <div
           style={{
-            zIndex: 2,
-            background: value ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.08)",
-            width: "96px",
-            height: "96px",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "2px solid rgba(212,175,55,0.65)",
+            fontSize: "20px",
+            marginBottom: "15px",
           }}
         >
-          {value ? (
-
-  <div>
-
-    <div
-      style={{
-        fontSize:"20px",
-        marginBottom:"15px"
-      }}
-    >
-      {title.includes("SKY")
-      ? "☁ 天"
-      : title.includes("EARTH")
-      ? "🌿 地"
-      : "🔥 人"}
-    </div>
-
-
-    <div
-      style={{
-        fontSize:"78px"
-      }}
-    >
-      {value}
-    </div>
-
-  </div>
-
-
-) : locked ? (
-
-"锁"
-
-) : (
-
-<div>
-
-  <div
-    style={{
-      fontSize:"48px",
-      lineHeight:"45px"
-    }}
-  >
-
-    九<br/>數
-
-  </div>
-
-  <div
-    style={{
-      fontSize:"14px",
-      marginTop:"20px"
-    }}
-  >
-
-  MASTER YEAN
-
-  </div>
-
-
-</div>
-
-)}
+          {title.includes("SKY")
+            ? "☁ 天"
+            : title.includes("EARTH")
+            ? "🌿 地"
+            : "🔥 人"}
         </div>
+
+        <div
+          style={{
+            fontSize: "78px",
+          }}
+        >
+          {value.name || value}
+        </div>
+      </div>
+    )
+  ) : locked ? (
+    "锁"
+  ) : (
+    <div>
+      <div
+        style={{
+          fontSize: "48px",
+          lineHeight: "45px",
+        }}
+      >
+        九
+        <br />
+        數
+      </div>
+
+      <div
+        style={{
+          fontSize: "14px",
+          marginTop: "20px",
+        }}
+      >
+        MASTER YEAN
+      </div>
+    </div>
+  )}
+</div>
+      
 
         <div
           style={{
