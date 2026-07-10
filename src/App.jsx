@@ -122,7 +122,7 @@ style={{left:"75%", top:"65%"}}
 </div>
 
 <div style={styles.resultCard}>
-{sky}
+{sky?.name || sky}
 </div>
 
 </div>
@@ -139,7 +139,7 @@ style={{left:"75%", top:"65%"}}
 </div>
 
 <div style={styles.resultCard}>
-{earth}
+{earth?.name || earth}
 </div>
 
 </div>
@@ -153,7 +153,7 @@ style={{left:"75%", top:"65%"}}
 </div>
 
 <div style={styles.resultCard}>
-{human}
+{human?.name || human}
 </div>
 
 </div>
