@@ -187,3 +187,149 @@ opacity:0;
   50% { box-shadow: 0 0 60px rgba(184, 50, 42, 0.95); }
   100% { box-shadow: 0 0 20px rgba(184, 50, 42, 0.4); }
 }
+
+/* Premium artifact card material */
+
+.artifact-card {
+  isolation: isolate;
+  transform-style: preserve-3d;
+
+  background-blend-mode:
+    soft-light,
+    normal;
+
+  box-shadow:
+    inset 0 0 18px rgba(255, 255, 255, 0.24),
+    inset 0 0 28px rgba(87, 52, 10, 0.18),
+    0 18px 35px rgba(76, 45, 15, 0.28);
+
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.artifact-card:hover {
+  transform:
+    translateY(-6px)
+    rotateX(2deg)
+    rotateY(-2deg);
+}
+
+
+/* Antique corner ornaments */
+
+.corner-ornament {
+  position: absolute;
+  z-index: 5;
+
+  color: #d8b44a;
+  font-size: 18px;
+
+  text-shadow:
+    0 1px 0 #fff2ad,
+    0 2px 5px rgba(77, 42, 6, 0.45);
+
+  pointer-events: none;
+}
+
+.corner-top-left {
+  top: 12px;
+  left: 14px;
+}
+
+.corner-top-right {
+  top: 12px;
+  right: 14px;
+}
+
+.corner-bottom-left {
+  bottom: 12px;
+  left: 14px;
+}
+
+.corner-bottom-right {
+  bottom: 12px;
+  right: 14px;
+}
+
+
+/* Jade and lacquer shine */
+
+.card-shine {
+  position: absolute;
+  z-index: 2;
+
+  top: -35%;
+  left: -70%;
+
+  width: 70%;
+  height: 170%;
+
+  background:
+    linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.12) 38%,
+      rgba(255, 255, 255, 0.58) 50%,
+      rgba(255, 255, 255, 0.12) 62%,
+      transparent 80%
+    );
+
+  transform: rotate(12deg);
+
+  animation:
+    cardShimmer 7s infinite ease-in-out;
+
+  pointer-events: none;
+}
+
+@keyframes cardShimmer {
+  0% {
+    left: -80%;
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.65;
+  }
+
+  45% {
+    left: 115%;
+    opacity: 0;
+  }
+
+  100% {
+    left: 115%;
+    opacity: 0;
+  }
+}
+
+
+/* Subtle parchment grain */
+
+.card-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  border-radius: inherit;
+
+  background:
+    repeating-linear-gradient(
+      8deg,
+      rgba(90, 55, 15, 0.025) 0px,
+      rgba(90, 55, 15, 0.025) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      92deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 7px
+    );
+
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
