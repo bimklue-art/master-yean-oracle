@@ -190,6 +190,12 @@ function Deck({ title, color, value, locked, onClick }) {
     : color === "#2E7D5B"
     ? "earth-aura"
     : "human-aura";
+  const realmSymbol =
+  color === "#2C5DAA"
+    ? "☁"
+    : color === "#2E7D5B"
+    ? "山"
+    : "🔥";
 
   return (
     <div>
@@ -224,7 +230,21 @@ function Deck({ title, color, value, locked, onClick }) {
             border: "2px solid rgba(212,175,55,0.8)",
             borderRadius: "18px",
           }}
+          
         />
+
+        <div
+  style={{
+    position:"absolute",
+    fontSize:"120px",
+    opacity:0.12,
+    zIndex:1,
+  }}
+>
+
+{realmSymbol}
+
+</div>
 
         <div
           style={{
@@ -251,7 +271,69 @@ function Deck({ title, color, value, locked, onClick }) {
             border: "2px solid rgba(212,175,55,0.65)",
           }}
         >
-          {value ? value : locked ? "锁" : "?"}
+          {value ? (
+
+  <div>
+
+    <div
+      style={{
+        fontSize:"20px",
+        marginBottom:"15px"
+      }}
+    >
+      {title.includes("SKY")
+      ? "☁ 天"
+      : title.includes("EARTH")
+      ? "🌿 地"
+      : "🔥 人"}
+    </div>
+
+
+    <div
+      style={{
+        fontSize:"78px"
+      }}
+    >
+      {value}
+    </div>
+
+  </div>
+
+
+) : locked ? (
+
+"锁"
+
+) : (
+
+<div>
+
+  <div
+    style={{
+      fontSize:"48px",
+      lineHeight:"45px"
+    }}
+  >
+
+    九<br/>數
+
+  </div>
+
+  <div
+    style={{
+      fontSize:"14px",
+      marginTop:"20px"
+    }}
+  >
+
+  MASTER YEAN
+
+  </div>
+
+
+</div>
+
+)}
         </div>
 
         <div
@@ -319,7 +401,7 @@ const styles = {
   userSelect: "none",
   position: "relative",
   overflow: "hidden",
-  fontFamily: "'Times New Roman', serif",
+  fontFamily:"'KaiTi','STKaiti','Times New Roman',serif",
   textShadow: "0 2px 6px rgba(0,0,0,0.15)",
 },
   result: {
