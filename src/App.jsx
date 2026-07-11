@@ -207,9 +207,9 @@ function Deck({ title, color, value, locked, onClick }) {
         style={{
           ...styles.card,
           background: value
-            ? "linear-gradient(145deg, #fff9ea, #f1dca8)"
+           ? "transparent"
             : `linear-gradient(145deg, ${color}, #2b1d14)`,
-          border: `5px double ${value ? "#D4AF37" : color}`,
+            border: value ? "none" : `5px double ${color}`,
           color: value ? color : "#fff8e8",
           opacity: locked ? 0.35 : 1,
           cursor: isActive ? "pointer" : "default",
@@ -233,10 +233,10 @@ function Deck({ title, color, value, locked, onClick }) {
           
         />
 
-        <div className="corner-ornament corner-top-left">◆</div>
-  <div className="corner-ornament corner-top-right">◆</div>
-  <div className="corner-ornament corner-bottom-left">◆</div>
-  <div className="corner-ornament corner-bottom-right">◆</div>
+  <div className="corner-ornament corner-top-left">◆</div>
+    <div className="corner-ornament corner-top-right">◆</div>
+    <div className="corner-ornament corner-bottom-left">◆</div>
+    <div className="corner-ornament corner-bottom-right">◆</div>
 
   <div className="card-shine" />
   <div className="card-texture" />
@@ -260,7 +260,7 @@ function Deck({ title, color, value, locked, onClick }) {
             top: "18px",
             fontSize: "18px",
             letterSpacing: "2px",
-            color: value ? "#8b6f2a" : "rgba(255,248,232,0.8)",
+            color: "#8b6f2a",
           }}
         >
           {title.replace(/[☁🌿🔥]/g, "")}
@@ -280,9 +280,18 @@ function Deck({ title, color, value, locked, onClick }) {
   {value ? (
     value.image ? (
       <img
-        src={value.image}
+         src={value.image}
         alt={value.name}
-        className="card-image"
+        style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "fill",
+        borderRadius: "22px",
+        zIndex: 5,
+        display: "block",
+}}
       />
     ) : (
       <div>
@@ -309,43 +318,61 @@ function Deck({ title, color, value, locked, onClick }) {
       </div>
     )
   ) : locked ? (
-    "锁"
+    <div style={{ fontSize: "48px", opacity: 0.7 }}>
+    锁
+  </div>
   ) : (
-    <div>
-      <div
-        style={{
-          fontSize: "48px",
-          lineHeight: "45px",
-        }}
-      >
-        九
-        <br />
-        數
-      </div>
+    <div
+  style={{
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    position: "relative",
+    zIndex: 4,
+  }}
+>
+  <div
+    style={{
+      fontSize: "72px",
+      lineHeight: "0.9",
+      letterSpacing: "4px",
+      fontFamily: "serif",
+      textShadow: "0 4px 12px rgba(0,0,0,0.35)",
+    }}
+  >
+    九
+    <br />
+    數
+  </div>
 
-      <div
-        style={{
-          fontSize: "14px",
-          marginTop: "20px",
-        }}
-      >
-        MASTER YEAN
-      </div>
-    </div>
+  <div
+    style={{
+      width: "90px",
+      height: "1px",
+      background: "rgba(212,175,55,0.8)",
+      margin: "28px 0 18px",
+    }}
+  />
+
+  <div
+    style={{
+      fontSize: "18px",
+      letterSpacing: "3px",
+      fontFamily: "serif",
+    }}
+  >
+    MASTER YEAN
+  </div>
+</div>
   )}
 </div>
       
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "20px",
-            fontSize: "14px",
-            color: value ? "#8b6f2a" : "rgba(255,248,232,0.8)",
-          }}
-        >
-          MASTER YEAN
-        </div>
+        
       </div>
 
       <p>{value ? "Revealed" : locked ? "Locked" : "Touch to draw"}</p>
@@ -388,21 +415,11 @@ const styles = {
     marginTop: "40px",
   },
   card: {
-  width: "160px",
-  height: "250px",
-  borderRadius: "24px",
-  margin: "0 auto",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: "86px",
-  fontWeight: "bold",
-  boxShadow: "0 18px 35px rgba(76, 45, 15, 0.28)",
-  userSelect: "none",
+  width: "330px",
+  aspectRatio: "2 / 3",
   position: "relative",
   overflow: "hidden",
-  fontFamily:"'KaiTi','STKaiti','Times New Roman',serif",
-  textShadow: "0 2px 6px rgba(0,0,0,0.15)",
+  borderRadius: "22px",
 },
   result: {
     marginTop: "50px",
@@ -501,15 +518,7 @@ boxShadow:
 },
 };
 
-function resetRitual() {
 
-  setSky(null);
-  setEarth(null);
-  setHuman(null);
-
-  setActiveRealm("sky");
-
-}
 
 function playTone(frequency = 440, duration = 0.25) {
   const audio = new AudioContext();
