@@ -1,0 +1,163 @@
+/* MASTER YEAN ORACLE — Complete Bilingual UI */
+
+.bilingual-invocation {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 26px;
+}
+
+.invocation-pair {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+}
+
+.invocation-cn {
+  margin: 0 !important;
+  font-family: "STKaiti", "KaiTi", "DFKai-SB", "Noto Serif SC", serif;
+  font-size: clamp(23px, 2.7vw, 32px) !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+}
+
+.invocation-en {
+  margin: 0 !important;
+  color: rgba(247, 224, 160, 0.78);
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  font-size: clamp(11px, 1.25vw, 15px) !important;
+  font-style: italic;
+  line-height: 1.25 !important;
+  letter-spacing: 0.07em;
+}
+
+.begin-ritual-button .button-copy {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.begin-ritual-button .button-cn {
+  display: block;
+  font-family: "STKaiti", "KaiTi", "DFKai-SB", serif;
+  font-size: 19px;
+  letter-spacing: 0.15em;
+  text-indent: 0.15em;
+}
+
+.begin-ritual-button .button-en {
+  display: block;
+  font-family: Cambria, Georgia, serif;
+  font-size: 10px;
+  font-style: italic;
+  letter-spacing: 0.08em;
+}
+
+.ceremony-overlay-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.ceremony-overlay-copy p {
+  margin: 0;
+}
+
+.ceremony-overlay-copy span {
+  font-family: Cambria, Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  letter-spacing: 0.08em;
+}
+
+.ritual-instruction-pair {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.ritual-instruction-cn {
+  margin: 0;
+  color: #603817;
+  font-family: "STKaiti", "KaiTi", "DFKai-SB", "Noto Serif SC", serif;
+  font-size: clamp(17px, 1.8vw, 22px);
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+}
+
+.ritual-instruction-en {
+  margin: 0;
+  color: #876643;
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-style: italic;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+}
+
+.ritual-bottom-blessing {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  width: min(94%, 860px);
+  margin: 28px auto 0;
+  text-align: center;
+}
+
+.blessing-copy {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.blessing-cn {
+  margin: 0;
+  color: #5d3718;
+  font-family: "STKaiti", "KaiTi", "DFKai-SB", "Noto Serif SC", serif;
+  font-size: clamp(17px, 1.8vw, 23px);
+  letter-spacing: 0.09em;
+}
+
+.blessing-en {
+  margin: 0;
+  color: #8a6946;
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  font-size: clamp(11px, 1.15vw, 14px);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.blessing-cloud {
+  color: #b47c24;
+  font-size: 22px;
+  opacity: 0.7;
+}
+
+.transition-title-en,
+.transition-subtitle-en {
+  position: relative;
+  z-index: 2;
+  margin: 4px 0 0;
+  color: rgba(246, 222, 157, 0.82);
+  font-family: Cambria, Georgia, "Times New Roman", serif;
+  font-style: italic;
+  letter-spacing: 0.08em;
+}
+
+.transition-title-en { font-size: clamp(13px, 1.7vw, 18px); }
+.transition-subtitle-en { font-size: clamp(12px, 1.5vw, 16px); }
+
+@media (max-width: 600px) {
+  .bilingual-invocation { gap: 8px; margin-bottom: 20px; }
+  .invocation-en { max-width: 270px; }
+  .ritual-instruction-en { max-width: 92%; }
+  .ritual-bottom-blessing { gap: 7px; margin-top: 22px; }
+  .blessing-cloud { font-size: 17px; }
+  .blessing-en { max-width: 310px; font-size: 11px; }
+}

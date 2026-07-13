@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
-import "./Bilingual.css";
 import { skyCards, earthCards, humanCards, allCards } from "./data/cards";
 import Deck from "./components/Deck";
 import OracleSpread from "./components/OracleSpread";
@@ -205,8 +204,6 @@ function resetRitual() {
       style={styles.page}
     >
       <div className="oracle-atmosphere" aria-hidden="true">
-        <div className="temple-decoration temple-decoration-left" aria-hidden="true" />
-        <div className="temple-decoration temple-decoration-right" aria-hidden="true" />
         <div className="cosmology-disc cosmology-disc-outer">
           <span className="cosmology-mark mark-1">☰</span>
           <span className="cosmology-mark mark-2">☷</span>
@@ -324,12 +321,9 @@ style={{left:"75%", top:"65%"}}
               <h1>{APP_TEXT.opening.title}</h1>
               <div className="opening-divider" />
 
-              <div className="opening-invocation bilingual-invocation">
-                {APP_TEXT.opening.invocation.map((item) => (
-                  <div className="invocation-pair" key={item.cn}>
-                    <p className="invocation-cn">{item.cn}</p>
-                    <p className="invocation-en">{item.en}</p>
-                  </div>
+              <div className="opening-invocation">
+                {APP_TEXT.opening.invocation.map((line) => (
+                  <p key={line}>{line}</p>
                 ))}
               </div>
 
@@ -339,10 +333,7 @@ style={{left:"75%", top:"65%"}}
                 onClick={beginCeremony}
                 disabled={ceremonyPhase === "entering"}
               >
-                <span className="button-copy">
-                  <span className="button-cn">{APP_TEXT.opening.beginButton}</span>
-                  <span className="button-en">{APP_TEXT.opening.beginButtonEn}</span>
-                </span>
+                <span>{APP_TEXT.opening.beginButton}</span>
               </button>
 
               <p className="opening-footer">{APP_TEXT.opening.footer}</p>
@@ -351,10 +342,7 @@ style={{left:"75%", top:"65%"}}
             {ceremonyPhase === "entering" && (
               <div className="ceremony-entry-overlay" aria-hidden="true">
                 <div className="entry-ripple" />
-                <div className="ceremony-overlay-copy">
-                  <p>{APP_TEXT.opening.entering}</p>
-                  <span>{APP_TEXT.opening.enteringEn}</span>
-                </div>
+                <p>{APP_TEXT.opening.entering}</p>
               </div>
             )}
           </section>
@@ -375,10 +363,7 @@ style={{left:"75%", top:"65%"}}
             {ceremonyPhase === "closing" && (
               <div className="ceremony-closing" aria-hidden="true">
                 <div className="closing-halo" />
-                <div className="ceremony-overlay-copy">
-                  <p>{APP_TEXT.closing.title}</p>
-                  <span>{APP_TEXT.closing.titleEn}</span>
-                </div>
+                <p>{APP_TEXT.closing.title}</p>
               </div>
             )}
 
@@ -407,23 +392,13 @@ style={{left:"75%", top:"65%"}}
                 <header className="ritual-intro">
                   <p className="ritual-eyebrow">{APP_TEXT.ritual.eyebrow}</p>
                   <h1>{APP_TEXT.ritual.title}</h1>
-                  <div className="ritual-instruction-pair">
-                    <p className="ritual-instruction-cn">
-                      {resultPhase === "third-card-pause"
-                        ? APP_TEXT.ritual.thirdCardPause
-                        : resultPhase === "transition"
-                        ? APP_TEXT.ritual.transitionMessage
-                        : APP_TEXT.ritual.instruction}
-                    </p>
-
-                    <p className="ritual-instruction-en">
-                      {resultPhase === "third-card-pause"
-                        ? APP_TEXT.ritual.thirdCardPauseEn
-                        : resultPhase === "transition"
-                        ? APP_TEXT.ritual.transitionMessageEn
-                        : APP_TEXT.ritual.instructionEn}
-                    </p>
-                  </div>
+                  <p>
+                    {resultPhase === "third-card-pause"
+                      ? APP_TEXT.ritual.thirdCardPause
+                      : resultPhase === "transition"
+                      ? APP_TEXT.ritual.transitionMessage
+                      : APP_TEXT.ritual.instruction}
+                  </p>
                 </header>
 
                 <div style={styles.decks}>
@@ -455,17 +430,6 @@ style={{left:"75%", top:"65%"}}
                   />
                 </div>
 
-                <div className="ritual-bottom-blessing">
-                  <span className="blessing-cloud" aria-hidden="true">☁</span>
-
-                  <div className="blessing-copy">
-                    <p className="blessing-cn">{APP_TEXT.ritual.footerBlessing}</p>
-                    <p className="blessing-en">{APP_TEXT.ritual.footerBlessingEn}</p>
-                  </div>
-
-                  <span className="blessing-cloud" aria-hidden="true">☁</span>
-                </div>
-
                 {resultPhase === "transition" && (
                   <div className="oracle-transition" role="status" aria-live="polite">
                     <div className="transition-light" aria-hidden="true" />
@@ -475,10 +439,8 @@ style={{left:"75%", top:"65%"}}
                       <span>人</span>
                     </div>
                     <p className="transition-title">{APP_TEXT.transition.title}</p>
-                    <p className="transition-title-en">{APP_TEXT.transition.titleEn}</p>
                     <div className="transition-divider" />
                     <p className="transition-subtitle">{APP_TEXT.transition.subtitle}</p>
-                    <p className="transition-subtitle-en">{APP_TEXT.transition.subtitleEn}</p>
                   </div>
                 )}
               </main>

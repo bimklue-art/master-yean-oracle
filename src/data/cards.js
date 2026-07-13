@@ -220,3 +220,9 @@ image:renChou
 }
 
 ];
+
+export const allCards = [
+  ...skyCards,
+  ...earthCards,
+  ...humanCards,
+];
