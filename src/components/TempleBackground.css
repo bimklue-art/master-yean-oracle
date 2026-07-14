@@ -418,3 +418,58 @@
     animation: none !important;
   }
 }
+
+
+/* =========================================================
+   Mobile performance profile
+   ========================================================= */
+
+@media (max-width: 820px), (hover: none) and (pointer: coarse) {
+  .living-cloud-two,
+  .living-cloud-three,
+  .living-light-ray,
+  .living-lantern-glow,
+  .living-mist-two,
+  .living-mist-three,
+  .living-gold-particle {
+    display: none !important;
+  }
+
+  .living-cloud-one {
+    opacity: 0.12 !important;
+    filter: blur(10px) !important;
+    animation-duration: 75s !important;
+  }
+
+  .living-mist-one {
+    opacity: 0.08 !important;
+    filter: blur(12px) !important;
+    animation-duration: 58s !important;
+  }
+
+  .living-temple-aura {
+    animation-duration: 14s !important;
+    opacity: 0.42 !important;
+  }
+
+  .living-gold-dust span:nth-child(n + 9),
+  .ambient-particle-field span:nth-child(n + 11) {
+    display: none !important;
+  }
+
+  .living-gold-dust span {
+    box-shadow: none !important;
+    animation-duration: 22s !important;
+  }
+
+  .oracle-atmosphere,
+  .temple-decoration {
+    will-change: auto !important;
+  }
+
+  .oracle-atmosphere *,
+  .living-mist {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

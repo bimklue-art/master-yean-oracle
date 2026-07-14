@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title">
+  <title id="title">Yin Yang</title>
+  <circle cx="100" cy="100" r="96" fill="#f5dfa0" stroke="#e5b84b" stroke-width="8"/>
+  <path d="M100 4a96 96 0 0 1 0 192 48 48 0 0 1 0-96 48 48 0 0 0 0-96Z" fill="#3b2114"/>
+  <circle cx="100" cy="52" r="14" fill="#f5dfa0"/>
+  <circle cx="100" cy="148" r="14" fill="#3b2114"/>
+</svg>

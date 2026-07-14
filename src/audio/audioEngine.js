@@ -63,21 +63,53 @@ class OracleAudioEngine {
     this.pendingTimers.clear();
   }
 
-  async unlock() {
-    if (this.destroyed || this.unlocked) return;
+  unlock() {
+    if (this.destroyed) return;
+    this.unlocked = true;
+  }
 
-    const silentAudio = new Audio(
-      "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAA==",
+  primeMobileAudio() {
+    if (!this.enabled || this.destroyed) return;
+
+    this.unlock();
+
+    /*
+      iOS and Android browsers require a real media play call during the
+      user's tap. Start the ritual track silently now, then the normal
+      fade engine raises its volume when the ceremony begins.
+    */
+    if (!this.musicTrack) {
+      const ritualTrack = createAudio(
+        AUDIO_FILES.music.ritual,
+        {
+          loop: true,
+          volume: 0,
+        },
+      );
+
+      const playPromise = ritualTrack.play();
+
+      if (playPromise?.catch) {
+        playPromise.catch(() => {});
+      }
+
+      this.musicTrack = ritualTrack;
+      this.musicName = "ritual";
+    }
+
+    const startAudio = createAudio(
+      AUDIO_FILES.sfx.start,
+      {
+        volume:
+          (AUDIO_SETTINGS.sfxVolume.start ?? 0.72) *
+          AUDIO_SETTINGS.masterVolume,
+      },
     );
 
-    silentAudio.volume = 0;
+    const startPromise = startAudio.play();
 
-    try {
-      await silentAudio.play();
-      silentAudio.pause();
-      this.unlocked = true;
-    } catch {
-      // A later direct user interaction will try again.
+    if (startPromise?.catch) {
+      startPromise.catch(() => {});
     }
   }
 
@@ -187,15 +219,13 @@ class OracleAudioEngine {
       return;
     }
 
-    await this.unlock();
+    this.unlock();
 
     const generation = ++this.musicGeneration;
     const targetVolume = this.getMusicTargetVolume(trackName);
     const fadeDuration =
       options.fadeDurationMs ??
-      (this.musicTrack
-        ? AUDIO_SETTINGS.crossfadeMs
-        : AUDIO_SETTINGS.fadeInMs);
+      AUDIO_SETTINGS.crossfadeMs;
 
     if (
       this.musicTrack &&
@@ -203,7 +233,10 @@ class OracleAudioEngine {
     ) {
       if (this.musicTrack.paused) {
         try {
-          await this.musicTrack.play();
+          const playPromise = this.musicTrack.play();
+          if (playPromise?.catch) {
+            await playPromise;
+          }
         } catch {
           return;
         }
@@ -350,7 +383,7 @@ class OracleAudioEngine {
       return;
     }
 
-    await this.unlock();
+    this.unlock();
 
     const pool = this.getEffectPool(effectName);
     const audio =
@@ -418,7 +451,7 @@ class OracleAudioEngine {
       return;
     }
 
-    await this.unlock();
+    this.unlock();
 
     const audio = this.getAmbienceTrack(name);
     const configuredVolume =
@@ -493,8 +526,6 @@ class OracleAudioEngine {
   }
 
   async destroy() {
-    if (this.destroyed) return;
-
     this.destroyed = true;
     this.clearPendingTimers();
     this.stopRandomAmbience();

@@ -161,9 +161,8 @@ function App() {
   }, 450);
 }
 
-async function beginCeremony() {
-  await audio.unlock();
-  audio.playEffect("start");
+function beginCeremony() {
+  audio.primeMobileAudio();
 
   setCeremonyPhase("entering");
 
@@ -304,7 +303,23 @@ function resetRitual() {
             <button
               type="button"
               className="sound-toggle"
-              onClick={() => setSoundEnabled((current) => !current)}
+              onClick={() => {
+                setSoundEnabled((current) => {
+                  const nextEnabled = !current;
+
+                  if (nextEnabled) {
+                    audio.setEnabled(true);
+                    audio.primeMobileAudio();
+                    audio.playMusic(
+                      resultPhase === "result"
+                        ? "result"
+                        : "ritual",
+                    );
+                  }
+
+                  return nextEnabled;
+                });
+              }}
               aria-pressed={soundEnabled}
               aria-label={soundEnabled ? APP_TEXT.sound.muteLabel : APP_TEXT.sound.enableLabel}
               title={soundEnabled ? APP_TEXT.sound.enabledTitle : APP_TEXT.sound.mutedTitle}

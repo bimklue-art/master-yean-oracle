@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { APP_TEXT } from "../config/appText";
+import yinYangIcon from "../assets/yin-yang.svg";
 import "./ResultTransition.css";
 
 function ResultTransition() {
@@ -40,7 +41,11 @@ function ResultTransition() {
         <div className="formation-ring formation-ring-inner" />
 
         <div className="formation-core" aria-label="Yin Yang">
-          <span className="formation-yinyang-symbol">☯</span>
+          <img
+            src={yinYangIcon}
+            alt=""
+            className="formation-yinyang-image"
+          />
         </div>
 
         <div className="formation-seal">
