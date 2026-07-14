@@ -35,6 +35,15 @@ class OracleAudioEngine {
     this.musicGeneration = 0;
 
     this.effectPools = new Map();
+
+    /*
+      iPhone Safari is more reliable when sound effects reuse media elements
+      that were created and unlocked during the first user gesture.
+    */
+    this.mobileSfxChannels = [];
+    this.mobileSfxIndex = 0;
+    this.mobileAmbienceChannel = null;
+
     this.ambienceTracks = new Map();
     this.ambienceTimer = null;
 
@@ -72,11 +81,10 @@ class OracleAudioEngine {
     if (!this.enabled || this.destroyed) return;
 
     this.unlock();
+    this.ensureMobileChannels();
 
     /*
-      iOS and Android browsers require a real media play call during the
-      user's tap. Start the ritual track silently now, then the normal
-      fade engine raises its volume when the ceremony begins.
+      Prime the ritual music during the user's first tap.
     */
     if (!this.musicTrack) {
       const ritualTrack = createAudio(
@@ -97,20 +105,56 @@ class OracleAudioEngine {
       this.musicName = "ritual";
     }
 
-    const startAudio = createAudio(
-      AUDIO_FILES.sfx.start,
-      {
-        volume:
-          (AUDIO_SETTINGS.sfxVolume.start ?? 0.72) *
-          AUDIO_SETTINGS.masterVolume,
-      },
-    );
+    /*
+      Prime every persistent SFX channel during the same user gesture.
+      Safari can then reuse these elements later for flips and bells.
+    */
+    this.mobileSfxChannels.forEach((channel, index) => {
+      channel.pause();
+      channel.currentTime = 0;
+      channel.src = AUDIO_FILES.sfx.start;
+      channel.volume =
+        index === 0
+          ? (AUDIO_SETTINGS.sfxVolume.start ?? 0.72) *
+            AUDIO_SETTINGS.masterVolume
+          : 0;
 
-    const startPromise = startAudio.play();
+      const promise = channel.play();
 
-    if (startPromise?.catch) {
-      startPromise.catch(() => {});
+      if (promise?.catch) {
+        promise.catch(() => {});
+      }
+
+      if (index !== 0) {
+        window.setTimeout(() => {
+          channel.pause();
+          channel.currentTime = 0;
+        }, 40);
+      }
+    });
+
+    /*
+      Prime the optional ambience channel too.
+    */
+    this.mobileAmbienceChannel.pause();
+    this.mobileAmbienceChannel.currentTime = 0;
+    this.mobileAmbienceChannel.src =
+      AUDIO_FILES.ambience.wind;
+    this.mobileAmbienceChannel.volume = 0;
+
+    const ambiencePromise =
+      this.mobileAmbienceChannel.play();
+
+    if (ambiencePromise?.catch) {
+      ambiencePromise.catch(() => {});
     }
+
+    window.setTimeout(() => {
+      this.mobileAmbienceChannel?.pause();
+      if (this.mobileAmbienceChannel) {
+        this.mobileAmbienceChannel.currentTime = 0;
+      }
+    }, 40);
   }
 
   setEnabled(nextEnabled) {
@@ -159,6 +203,39 @@ class OracleAudioEngine {
           }),
       ),
     );
+  }
+
+  isMobileSafariLike() {
+    const userAgent = window.navigator.userAgent;
+    const touchDevice =
+      "ontouchstart" in window ||
+      window.navigator.maxTouchPoints > 0;
+
+    return (
+      touchDevice &&
+      /iPhone|iPad|iPod|Macintosh/i.test(userAgent)
+    );
+  }
+
+  ensureMobileChannels() {
+    if (this.mobileSfxChannels.length === 0) {
+      this.mobileSfxChannels = Array.from(
+        { length: 3 },
+        () =>
+          createAudio(AUDIO_FILES.sfx.start, {
+            volume: 0,
+          }),
+      );
+    }
+
+    if (!this.mobileAmbienceChannel) {
+      this.mobileAmbienceChannel = createAudio(
+        AUDIO_FILES.ambience.wind,
+        {
+          volume: 0,
+        },
+      );
+    }
   }
 
   getMusicTargetVolume(trackName) {
@@ -385,6 +462,83 @@ class OracleAudioEngine {
 
     this.unlock();
 
+    const configuredVolume =
+      AUDIO_SETTINGS.sfxVolume[effectName] ?? 0.7;
+
+    const finalVolume = clamp(
+      (options.volume ?? configuredVolume) *
+        AUDIO_SETTINGS.masterVolume,
+    );
+
+    const playbackRate = clamp(
+      options.playbackRate ?? 1,
+      0.75,
+      1.3,
+    );
+
+    /*
+      Reuse channels already unlocked by the initial tap on iPhone/iPad.
+    */
+    if (this.isMobileSafariLike()) {
+      this.ensureMobileChannels();
+
+      const audio =
+        this.mobileSfxChannels[
+          this.mobileSfxIndex %
+            this.mobileSfxChannels.length
+        ];
+
+      this.mobileSfxIndex += 1;
+
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = AUDIO_FILES.sfx[effectName];
+      audio.volume = finalVolume;
+      audio.playbackRate = playbackRate;
+      audio.load();
+
+      try {
+        const playPromise = audio.play();
+
+        if (playPromise?.catch) {
+          await playPromise;
+        }
+      } catch {
+        /*
+          Retry once after load metadata. This handles slower iPhone networks.
+        */
+        await new Promise((resolve) => {
+          const finish = () => resolve();
+
+          audio.addEventListener(
+            "canplay",
+            finish,
+            { once: true },
+          );
+
+          audio.addEventListener(
+            "error",
+            finish,
+            { once: true },
+          );
+
+          window.setTimeout(finish, 700);
+        });
+
+        try {
+          const retryPromise = audio.play();
+
+          if (retryPromise?.catch) {
+            await retryPromise;
+          }
+        } catch {
+          // Never interrupt the oracle UI for an audio failure.
+        }
+      }
+
+      return;
+    }
+
     const pool = this.getEffectPool(effectName);
     const audio =
       pool.find((item) => item.paused || item.ended) ??
@@ -392,19 +546,8 @@ class OracleAudioEngine {
 
     audio.pause();
     audio.currentTime = 0;
-    audio.playbackRate = clamp(
-      options.playbackRate ?? 1,
-      0.75,
-      1.3,
-    );
-
-    const configuredVolume =
-      AUDIO_SETTINGS.sfxVolume[effectName] ?? 0.7;
-
-    audio.volume = clamp(
-      (options.volume ?? configuredVolume) *
-        AUDIO_SETTINGS.masterVolume,
-    );
+    audio.playbackRate = playbackRate;
+    audio.volume = finalVolume;
 
     try {
       await audio.play();
@@ -453,16 +596,43 @@ class OracleAudioEngine {
 
     this.unlock();
 
-    const audio = this.getAmbienceTrack(name);
     const configuredVolume =
       AUDIO_SETTINGS.ambienceVolume[name] ?? 0.1;
 
-    audio.pause();
-    audio.currentTime = 0;
-    audio.volume = clamp(
+    const finalVolume = clamp(
       configuredVolume *
         AUDIO_SETTINGS.masterVolume,
     );
+
+    if (this.isMobileSafariLike()) {
+      this.ensureMobileChannels();
+
+      const audio = this.mobileAmbienceChannel;
+
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = AUDIO_FILES.ambience[name];
+      audio.volume = finalVolume;
+      audio.load();
+
+      try {
+        const playPromise = audio.play();
+
+        if (playPromise?.catch) {
+          await playPromise;
+        }
+      } catch {
+        // Optional ambience is non-fatal.
+      }
+
+      return;
+    }
+
+    const audio = this.getAmbienceTrack(name);
+
+    audio.pause();
+    audio.currentTime = 0;
+    audio.volume = finalVolume;
 
     try {
       await audio.play();
@@ -512,6 +682,16 @@ class OracleAudioEngine {
   }
 
   stopAllEffects() {
+    this.mobileSfxChannels.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+
+    if (this.mobileAmbienceChannel) {
+      this.mobileAmbienceChannel.pause();
+      this.mobileAmbienceChannel.currentTime = 0;
+    }
+
     this.effectPools.forEach((pool) => {
       pool.forEach((audio) => {
         audio.pause();
