@@ -4444,13 +4444,55 @@ body {
 @media (max-width: 600px) {
   .oracle-result-rc1 .spread-sky { top: -10px; }
   .oracle-blessing-sweep { width: 34%; }
-  .oracle-contact-card { margin-top: 16px; }
+  .oracle-contact-card {  
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:18px;
+
+    margin-top:24px; }
   .oracle-contact-link {
-    align-items: flex-start;
-    font-size: 13px;
-    line-height: 1.45;
-    overflow-wrap: anywhere;
+     display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:4px;
+
+    text-decoration:none;
+
+    color:#6F471F;
+
+    margin:0;
   }
+
+  .oracle-contact-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#B07D24;
+
+    letter-spacing:.08em;
+}
+
+.oracle-contact-value{
+
+    font-size:16px;
+
+    color:#6A4725;
+
+    letter-spacing:.03em;
+}
 }
 
 @media (prefers-reduced-motion: reduce) {
