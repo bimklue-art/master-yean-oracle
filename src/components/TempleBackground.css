@@ -1,0 +1,420 @@
+/* =========================================================
+   MASTER YEAN ORACLE — Living Temple v1.1.0
+   ========================================================= */
+
+.oracle-atmosphere {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.living-temple-aura {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(239, 199, 104, 0.09),
+      transparent 55%
+    );
+  opacity: 0.65;
+  animation: templeAuraBreathe 8s ease-in-out infinite;
+}
+
+.living-cloud {
+  position: absolute;
+  width: 38vw;
+  height: 14vw;
+  min-width: 320px;
+  min-height: 100px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(255, 250, 226, 0.14),
+      rgba(235, 217, 176, 0.07) 55%,
+      transparent 76%
+    );
+  filter: blur(24px);
+  opacity: 0.28;
+}
+
+.living-cloud-one {
+  top: 8%;
+  left: -20%;
+  animation: cloudDriftOne 52s linear infinite;
+}
+
+.living-cloud-two {
+  top: 34%;
+  right: -24%;
+  animation: cloudDriftTwo 64s linear infinite;
+}
+
+.living-cloud-three {
+  bottom: 6%;
+  left: 18%;
+  width: 46vw;
+  animation: cloudDriftThree 58s ease-in-out infinite;
+}
+
+.living-light-ray {
+  position: absolute;
+  top: -28%;
+  width: 14vw;
+  height: 120%;
+  min-width: 120px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 243, 190, 0.18),
+      rgba(255, 229, 154, 0.05) 38%,
+      transparent 76%
+    );
+  filter: blur(16px);
+  opacity: 0.12;
+  transform: rotate(16deg);
+}
+
+.living-light-ray-one {
+  left: 12%;
+  animation: lightRaySweep 62s ease-in-out infinite;
+}
+
+.living-light-ray-two {
+  left: 38%;
+  opacity: 0.07;
+  animation: lightRaySweep 74s 9s ease-in-out infinite reverse;
+}
+
+.living-lantern-glow {
+  position: absolute;
+  top: 43%;
+  width: 120px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 183, 74, 0.2),
+      rgba(206, 117, 24, 0.07) 46%,
+      transparent 72%
+    );
+  filter: blur(9px);
+  opacity: 0.4;
+  animation: lanternBreathe 6.5s ease-in-out infinite;
+}
+
+.living-lantern-left {
+  left: 7%;
+}
+
+.living-lantern-right {
+  right: 7%;
+  animation-delay: 1.3s;
+}
+
+.living-mist {
+  position: fixed;
+  z-index: 1;
+  width: 54vw;
+  height: 18vw;
+  min-width: 420px;
+  min-height: 130px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(255, 251, 231, 0.17),
+      rgba(242, 225, 187, 0.08) 50%,
+      transparent 74%
+    );
+  filter: blur(34px);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.living-mist-one {
+  top: 18%;
+  left: -32%;
+  animation: mistDriftOne 34s ease-in-out infinite;
+}
+
+.living-mist-two {
+  top: 52%;
+  left: 44%;
+  animation: mistDriftTwo 41s ease-in-out infinite;
+}
+
+.living-mist-three {
+  bottom: -2%;
+  right: -28%;
+  animation: mistDriftThree 37s ease-in-out infinite;
+}
+
+.living-gold-dust {
+  position: absolute;
+  inset: 0;
+}
+
+.living-gold-dust span {
+  --dust-x: calc((var(--dust-index) * 43) % 100);
+  --dust-y: calc((var(--dust-index) * 61) % 100);
+  --dust-size: calc(2px + (var(--dust-index) % 3) * 1px);
+
+  position: absolute;
+  left: calc(var(--dust-x) * 1%);
+  top: calc(var(--dust-y) * 1%);
+  width: var(--dust-size);
+  height: var(--dust-size);
+  border-radius: 50%;
+  background: rgba(221, 169, 55, 0.64);
+  box-shadow:
+    0 0 8px rgba(255, 219, 129, 0.35),
+    0 0 16px rgba(197, 130, 24, 0.14);
+  opacity: 0;
+  animation:
+    dustRise calc(13s + (var(--dust-index) % 6) * 2s)
+      var(--dust-delay) ease-in-out infinite,
+    dustTwinkle calc(3.5s + (var(--dust-index) % 4) * 0.8s)
+      var(--dust-delay) ease-in-out infinite;
+}
+
+.atmosphere-awake .living-gold-dust span {
+  opacity: 1;
+}
+
+.living-gold-particle {
+  position: fixed;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.42;
+}
+
+.particle-one {
+  left: 18%;
+  top: 72%;
+  animation: visibleGoldFloat 9s ease-in-out infinite;
+}
+
+.particle-two {
+  left: 50%;
+  top: 82%;
+  animation: visibleGoldFloat 11s 1.2s ease-in-out infinite;
+}
+
+.particle-three {
+  left: 78%;
+  top: 68%;
+  animation: visibleGoldFloat 10s 2.1s ease-in-out infinite;
+}
+
+.atmosphere-converging .living-mist {
+  opacity: 0.28;
+  filter: blur(42px);
+}
+
+.atmosphere-converging .living-temple-aura {
+  opacity: 0.92;
+}
+
+.atmosphere-has-sky .living-light-ray {
+  opacity: 0.18;
+}
+
+.atmosphere-has-earth .living-lantern-glow {
+  opacity: 0.55;
+}
+
+.atmosphere-has-human .living-gold-dust span {
+  filter: brightness(1.2);
+}
+
+@keyframes templeAuraBreathe {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.98);
+  }
+
+  50% {
+    opacity: 0.82;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes cloudDriftOne {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(150vw);
+  }
+}
+
+@keyframes cloudDriftTwo {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-150vw);
+  }
+}
+
+@keyframes cloudDriftThree {
+  0%,
+  100% {
+    transform: translateX(-8vw);
+  }
+
+  50% {
+    transform: translateX(18vw);
+  }
+}
+
+@keyframes lightRaySweep {
+  0%,
+  100% {
+    transform: translateX(-8vw) rotate(16deg);
+    opacity: 0.06;
+  }
+
+  50% {
+    transform: translateX(20vw) rotate(12deg);
+    opacity: 0.16;
+  }
+}
+
+@keyframes lanternBreathe {
+  0%,
+  100% {
+    opacity: 0.32;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 0.62;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes mistDriftOne {
+  0%,
+  100% {
+    transform: translateX(0) scale(1);
+  }
+
+  50% {
+    transform: translateX(115vw) scale(1.12);
+  }
+}
+
+@keyframes mistDriftTwo {
+  0%,
+  100% {
+    transform: translateX(0) scale(0.96);
+  }
+
+  50% {
+    transform: translateX(-95vw) scale(1.08);
+  }
+}
+
+@keyframes mistDriftThree {
+  0%,
+  100% {
+    transform: translateX(0) scale(1);
+  }
+
+  50% {
+    transform: translateX(-120vw) scale(1.13);
+  }
+}
+
+@keyframes dustRise {
+  0%,
+  100% {
+    transform: translate3d(0, 18px, 0);
+  }
+
+  50% {
+    transform: translate3d(
+      calc((var(--dust-index) % 3 - 1) * 20px),
+      -34px,
+      0
+    );
+  }
+}
+
+@keyframes dustTwinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+
+  50% {
+    opacity: 0.62;
+  }
+}
+
+@keyframes visibleGoldFloat {
+  0%,
+  100% {
+    transform: translateY(8px);
+    opacity: 0.22;
+  }
+
+  50% {
+    transform: translateY(-20px);
+    opacity: 0.62;
+  }
+}
+
+@media (max-width: 900px) {
+  .living-light-ray {
+    opacity: 0.06;
+  }
+
+  .living-lantern-glow {
+    width: 90px;
+  }
+
+  .living-mist {
+    opacity: 0.1;
+  }
+}
+
+@media (max-width: 600px) {
+  .living-cloud {
+    opacity: 0.16;
+  }
+
+  .living-light-ray {
+    display: none;
+  }
+
+  .living-lantern-glow {
+    opacity: 0.25;
+  }
+
+  .living-gold-dust span:nth-child(n + 15) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .living-temple-aura,
+  .living-cloud,
+  .living-light-ray,
+  .living-lantern-glow,
+  .living-mist,
+  .living-gold-dust span,
+  .living-gold-particle {
+    animation: none !important;
+  }
+}

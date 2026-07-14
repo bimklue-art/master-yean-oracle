@@ -5,7 +5,10 @@ import { skyCards, earthCards, humanCards, allCards } from "./data/cards";
 import Deck from "./components/Deck";
 import OracleSpread from "./components/OracleSpread";
 import { APP_TEXT } from "./config/appText";
-import { createOracleAudioEngine } from "./audio/oracleAudio";
+import { useOracleAudio } from "./audio/useOracleAudio";
+import AudioLab from "./components/AudioLab";
+import TempleBackground from "./components/TempleBackground";
+import ResultTransition from "./components/ResultTransition";
 
 function App() {
   const [sky, setSky] = useState(null);
@@ -21,11 +24,11 @@ function App() {
 
     return savedPreference !== "muted";
   });
-  const audioEngineRef = useRef(null);
   const timersRef = useRef(new Set());
   const [assetsReady, setAssetsReady] = useState(false);
   const [loadedAssets, setLoadedAssets] = useState(0);
   const [ceremonyPhase, setCeremonyPhase] = useState("opening");
+  const audio = useOracleAudio(soundEnabled);
 
   const schedule = useCallback((callback, delay) => {
     const timerId = window.setTimeout(() => {
@@ -56,28 +59,26 @@ function App() {
   }, []);
 
   useEffect(() => {
-    audioEngineRef.current = createOracleAudioEngine();
-    audioEngineRef.current.setEnabled(soundEnabled);
-
-    return () => {
-      audioEngineRef.current?.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
-    audioEngineRef.current?.setEnabled(soundEnabled);
-
-    if (
-      soundEnabled &&
-      ceremonyPhase === "ritual"
-    ) {
-      audioEngineRef.current?.startAmbientMusic();
-    }
-
     if (!soundEnabled) {
-      audioEngineRef.current?.stopAmbientMusic();
+      audio.stopRandomAmbience();
+      return;
     }
-  }, [soundEnabled, ceremonyPhase]);
+
+    if (ceremonyPhase === "ritual") {
+      audio.playMusic(
+        resultPhase === "result" ? "result" : "ritual",
+      );
+      audio.startRandomAmbience();
+      return;
+    }
+
+    audio.stopRandomAmbience();
+  }, [
+    audio,
+    ceremonyPhase,
+    resultPhase,
+    soundEnabled,
+  ]);
 
   useEffect(() => {
     let cancelled = false;
@@ -117,7 +118,7 @@ function App() {
 
   function drawCard(realm, deck, setter) {
     if (flipping) return;
-    audioEngineRef.current?.playDrawEffect(realm);
+    audio.playDrawEffect(realm);
 
   const random =
     deck[Math.floor(Math.random() * deck.length)];
@@ -145,34 +146,37 @@ function App() {
 
       schedule(() => {
         setResultPhase("transition");
-
-        audioEngineRef.current?.playCompletionEffect();
+        audio.playCompletionSequence();
       }, 1800);
 
+      /*
+        The transition screen now remains visible for about 4.8 seconds,
+        which is three seconds longer than before.
+      */
       schedule(() => {
         setResultPhase("result");
-      }, 3600);
+      }, 8600);
     }
 
   }, 450);
 }
 
-function beginCeremony() {
+async function beginCeremony() {
+  await audio.unlock();
+  audio.playEffect("start");
+
   setCeremonyPhase("entering");
-  audioEngineRef.current?.setEnabled(soundEnabled);
 
   schedule(() => {
     setCeremonyPhase("ritual");
-
-    if (soundEnabled) {
-      audioEngineRef.current?.startAmbientMusic();
-    }
   }, 1400);
 }
 
 function endCeremony() {
   setCeremonyPhase("closing");
-  audioEngineRef.current?.stopAmbientMusic();
+  audio.stopRandomAmbience();
+  audio.playEffect("end");
+  audio.stopMusic();
 
   schedule(() => {
     resetRitual();
@@ -204,78 +208,15 @@ function resetRitual() {
         .join(" ")}
       style={styles.page}
     >
-      <div className="oracle-atmosphere" aria-hidden="true">
-        <div className="temple-decoration temple-decoration-left" aria-hidden="true" />
-        <div className="temple-decoration temple-decoration-right" aria-hidden="true" />
-        <div className="cosmology-disc cosmology-disc-outer">
-          <span className="cosmology-mark mark-1">☰</span>
-          <span className="cosmology-mark mark-2">☷</span>
-          <span className="cosmology-mark mark-3">☵</span>
-          <span className="cosmology-mark mark-4">☲</span>
-          <span className="cosmology-mark mark-5">☳</span>
-          <span className="cosmology-mark mark-6">☴</span>
-          <span className="cosmology-mark mark-7">☶</span>
-          <span className="cosmology-mark mark-8">☱</span>
-        </div>
+      <TempleBackground
+        activeRealm={activeRealm}
+        sky={sky}
+        earth={earth}
+        human={human}
+        ceremonyPhase={ceremonyPhase}
+        resultPhase={resultPhase}
+      />
 
-        <div className="cosmology-disc cosmology-disc-middle">
-          <span className="cosmology-dot dot-1" />
-          <span className="cosmology-dot dot-2" />
-          <span className="cosmology-dot dot-3" />
-          <span className="cosmology-dot dot-4" />
-          <span className="cosmology-dot dot-5" />
-          <span className="cosmology-dot dot-6" />
-          <span className="cosmology-dot dot-7" />
-          <span className="cosmology-dot dot-8" />
-          <span className="cosmology-dot dot-9" />
-        </div>
-
-        <div className="cosmology-core">
-          <span>九</span>
-        </div>
-
-        <div className="realm-light realm-light-sky" />
-        <div className="realm-light realm-light-earth" />
-        <div className="realm-light realm-light-human" />
-
-        <div className="ambient-particle-field">
-          {Array.from({ length: 28 }).map((_, index) => (
-            <span
-              key={index}
-              style={{
-                "--ambient-index": index,
-                "--ambient-delay": `${(index % 7) * 0.55}s`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-      <div 
-  className="mist"
-  style={{
-    left: "0%",
-    top: "25%"
-  }}
-/>
-
-<div 
-  className="mist"
-  style={{
-    left: "30%",
-    top: "55%"
-  }}
-/>
-      <div className="gold-particle"
-style={{left:"20%", top:"70%"}}
-/>
-
-<div className="gold-particle"
-style={{left:"50%", top:"80%"}}
-/>
-
-<div className="gold-particle"
-style={{left:"75%", top:"65%"}}
-/>
       {!assetsReady && (
         <div className="oracle-loader" role="status" aria-live="polite">
           <div className="loader-halo" aria-hidden="true" />
@@ -467,26 +408,14 @@ style={{left:"75%", top:"65%"}}
                 </div>
 
                 {resultPhase === "transition" && (
-                  <div className="oracle-transition" role="status" aria-live="polite">
-                    <div className="transition-light" aria-hidden="true" />
-                    <div className="transition-seal" aria-hidden="true">
-                      <span>天</span>
-                      <span>地</span>
-                      <span>人</span>
-                    </div>
-                    <p className="transition-title">{APP_TEXT.transition.title}</p>
-                    <p className="transition-title-en">{APP_TEXT.transition.titleEn}</p>
-                    <div className="transition-divider" />
-                    <p className="transition-subtitle">{APP_TEXT.transition.subtitle}</p>
-                    <p className="transition-subtitle-en">{APP_TEXT.transition.subtitleEn}</p>
-                  </div>
+                  <ResultTransition />
                 )}
               </main>
             )}
           </>
         )}
       </div>
-
+    {import.meta.env.DEV && <AudioLab />}
     </div>
   );
 }

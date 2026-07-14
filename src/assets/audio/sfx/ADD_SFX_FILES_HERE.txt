@@ -1,0 +1,10 @@
+Add these files here:
+
+start-ritual.mp3
+sky-draw.mp3
+earth-draw.mp3
+human-draw.mp3
+card-flip.mp3
+oracle-completion.mp3
+golden-shimmer.mp3
+end-ceremony.mp3
